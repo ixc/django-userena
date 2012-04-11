@@ -16,6 +16,7 @@ from guardian.shortcuts import get_perms
 from guardian.shortcuts import assign
 
 from easy_thumbnails.fields import ThumbnailerImageField
+from easy_thumbnails.files import get_thumbnailer
 
 import datetime, random
 
@@ -205,9 +206,10 @@ class UserenaBaseProfile(models.Model):
         ('closed', _('Closed')),
     )
 
-    MUGSHOT_SETTINGS = {'size': (userena_settings.USERENA_MUGSHOT_SIZE,
-                                 userena_settings.USERENA_MUGSHOT_SIZE),
-                        'crop': userena_settings.USERENA_MUGSHOT_CROP_TYPE}
+    MUGSHOT_SETTINGS = {
+        'size': (userena_settings.USERENA_MUGSHOT_MAX_SIZE,
+                 userena_settings.USERENA_MUGSHOT_MAX_SIZE),
+        'crop': userena_settings.USERENA_MUGSHOT_CROP_TYPE}
 
     mugshot = ThumbnailerImageField(_('mugshot'),
                                     blank=True,
@@ -246,7 +248,7 @@ class UserenaBaseProfile(models.Model):
     def __unicode__(self):
         return 'Profile of %(username)s' % {'username': self.user.username}
 
-    def get_mugshot_url(self):
+    def get_mugshot_url(self, size=userena_settings.USERENA_MUGSHOT_SIZE):
         """
         Returns the image containing the mugshot for the user.
 
@@ -262,13 +264,17 @@ class UserenaBaseProfile(models.Model):
         """
         # First check for a mugshot and if any return that.
         if self.mugshot:
-            return self.mugshot.url
+            MUGSHOT_SETTINGS = {
+                'size': (size, size),
+                'crop': userena_settings.USERENA_MUGSHOT_CROP_TYPE}
+            return get_thumbnailer(
+                self.mugshot).get_thumbnail(MUGSHOT_SETTINGS).url
 
         # Use Gravatar if the user wants to.
         if userena_settings.USERENA_MUGSHOT_GRAVATAR:
-            return get_gravatar(self.user.email,
-                                userena_settings.USERENA_MUGSHOT_SIZE,
-                                userena_settings.USERENA_MUGSHOT_DEFAULT)
+            return get_gravatar(
+                self.user.email, size,
+                userena_settings.USERENA_MUGSHOT_DEFAULT)
 
         # Gravatar not used, check for a default image.
         else:

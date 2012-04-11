@@ -115,7 +115,16 @@ USERENA_MUGSHOT_SIZE
 ~~~~~~~~~~~~~~~~~~~~
 Default: ``80`` (int)
 
-Integer defining the size (in pixels) of the sides of the mugshot image.
+Integer defining the size (in pixels) of the sides of the mugshot image when
+rendered at the default size.
+
+USERENA_MUGSHOT_MAX_SIZE
+~~~~~~~~~~~~~~~~~~~~
+Default: ``300`` (int)
+
+Integer defining the maximum size (in pixels) of the sides of the mugshot
+image - user images will be cropped to this size when uploaded for disk-space
+efficiency.
 
 USERENA_MUGSHOT_PATH
 ~~~~~~~~~~~~~~~~~~~~
