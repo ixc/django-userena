@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from django.views.generic.simple import direct_to_template
+from django.views.generic.base import TemplateView
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 
@@ -15,9 +15,7 @@ urlpatterns = patterns('',
        userena_views.signin,
        name='userena_signin'),
     url(r'^signout/$',
-       auth_views.logout,
-       {'next_page': userena_settings.USERENA_REDIRECT_ON_SIGNOUT,
-        'template_name': 'userena/signout.html'},
+       userena_views.signout,
        name='userena_signout'),
 
     # Reset password
@@ -47,7 +45,7 @@ urlpatterns = patterns('',
        name='userena_signup_complete'),
 
     # Activate
-    url(r'^(?P<username>[\.\w]+)/activate/(?P<activation_key>\w+)/$',
+    url(r'^activate/(?P<activation_key>\w+)/$',
        userena_views.activate,
        name='userena_activate'),
 
@@ -63,7 +61,7 @@ urlpatterns = patterns('',
        userena_views.direct_to_user_template,
        {'template_name': 'userena/email_confirm_complete.html'},
        name='userena_email_confirm_complete'),
-    url(r'^(?P<username>[\.\w]+)/confirm-email/(?P<confirmation_key>\w+)/$',
+    url(r'^confirm-email/(?P<confirmation_key>\w+)/$',
        userena_views.email_confirm,
        name='userena_email_confirm'),
 
@@ -92,9 +90,9 @@ urlpatterns = patterns('',
        userena_views.profile_detail,
        name='userena_profile_detail'),
     url(r'^page/(?P<page>[0-9]+)/$',
-       userena_views.profile_list,
+       userena_views.ProfileListView.as_view(),
        name='userena_profile_list_paginated'),
     url(r'^$',
-       userena_views.profile_list,
+       userena_views.ProfileListView.as_view(),
        name='userena_profile_list'),
 )
