@@ -188,6 +188,13 @@ def activate(request, activation_key,
             messages.success(request, _('Your account has been activated and you have been signed in.'),
                              fail_silently=True)
 
+        if userena_settings.USERENA_ACTIVATION_ONLY_VALIDATE_EMAIL:
+            if not extra_context: extra_context = dict()
+            return ExtraContextTemplateView.as_view(
+                template_name='userena/activate_success.html',
+                extra_context=extra_context
+            )(request)
+
         if success_url: redirect_to = success_url % {'username': user.username }
         else: redirect_to = reverse('userena_profile_detail',
                                     kwargs={'username': user.username})

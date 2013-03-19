@@ -1,0 +1,10 @@
+{% extends 'userena/base_userena.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Account validation succeed." %}{% endblock %}
+{% block content_title %}<h2>{% trans "Your account was validated..." %}</h2>{% endblock %}
+
+{% block content %}
+<p>{% trans "Your account was validated.  A website administrator will now
+review your account for activation." %}</p>
+{% endblock %}
