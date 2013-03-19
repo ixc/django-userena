@@ -125,7 +125,10 @@ class UserenaManager(UserManager):
             if not userena.activation_key_expired():
                 userena.activation_key = userena_settings.USERENA_ACTIVATED
                 user = userena.user
-                user.is_active = True
+                if userena_settings.USERENA_ACTIVATION_ONLY_VALIDATE_EMAIL:
+                    user.is_active = False
+                else:
+                    user.is_active = True
                 userena.save(using=self._db)
                 user.save(using=self._db)
 

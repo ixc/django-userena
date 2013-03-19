@@ -22,6 +22,10 @@ USERENA_ACTIVATION_REQUIRED = getattr(settings,
                                       'USERENA_ACTIVATION_REQUIRED',
                                       True)
 
+USERENA_ACTIVATION_ONLY_VALIDATE_EMAIL = getattr(settings,
+                                      'USERENA_ACTIVATION_ONLY_VALIDATE_EMAIL',
+                                      False)
+
 USERENA_ACTIVATION_DAYS = getattr(settings,
                                   'USERENA_ACTIVATION_DAYS',
                                   7)
