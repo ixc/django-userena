@@ -179,6 +179,13 @@ def activate(request, activation_key,
     """
     user = UserenaSignup.objects.activate_user(activation_key)
     if user:
+        if userena_settings.USERENA_ACTIVATION_ONLY_VALIDATE_EMAIL:
+            if not extra_context: extra_context = dict()
+            return ExtraContextTemplateView.as_view(
+                template_name='userena/activate_success.html',
+                extra_context=extra_context
+            )(request)
+
         # Sign the user in.
         auth_user = authenticate(identification=user.email,
                                  check_password=False)
@@ -187,13 +194,6 @@ def activate(request, activation_key,
         if userena_settings.USERENA_USE_MESSAGES:
             messages.success(request, _('Your account has been activated and you have been signed in.'),
                              fail_silently=True)
-
-        if userena_settings.USERENA_ACTIVATION_ONLY_VALIDATE_EMAIL:
-            if not extra_context: extra_context = dict()
-            return ExtraContextTemplateView.as_view(
-                template_name='userena/activate_success.html',
-                extra_context=extra_context
-            )(request)
 
         if success_url: redirect_to = success_url % {'username': user.username }
         else: redirect_to = reverse('userena_profile_detail',
